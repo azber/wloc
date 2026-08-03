@@ -1,0 +1,12 @@
+{
+  // 个人部署配置：把 wloc worker 绑定到 wloc.xairor.com
+  // 部署：npx wrangler deploy -c wrangler.xairor.jsonc --minify
+  "name": "wloc-xairor",
+  "main": "src/index.js",
+  "compatibility_date": "2024-01-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": false,
+  "routes": [
+    { "pattern": "wloc.xairor.com", "custom_domain": true }
+  ]
+}
