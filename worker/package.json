@@ -1,8 +1,10 @@
 {
   "type": "module",
   "scripts": {
-    "dev": "npx wrangler dev",
-    "deploy": "npx wrangler deploy --minify",
+    "build:assets": "node scripts/build-assets.mjs",
+    "dev": "npm run build:assets && npx wrangler dev",
+    "deploy": "npm run build:assets && npx wrangler deploy --minify",
+    "deploy:xairor": "npm run build:assets && npx wrangler deploy -c wrangler.xairor.jsonc --minify",
     "pages:dev": "npx wrangler pages dev --port 8787 -c wrangler.pages.jsonc",
     "pages:deploy": "npx wrangler pages deploy -c wrangler.pages.jsonc"
   },

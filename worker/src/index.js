@@ -1,12 +1,26 @@
 import { Hono } from "hono/tiny";
 import { getPageHtml } from "./page.js";
 import { parseCoords, gcj02ToWgs84, round6 } from "./parse.js";
+import { ASSETS } from "./assets.js";
 
 const app = new Hono();
 
 app.get("/", (c) => {
   return c.html(getPageHtml());
 });
+
+// 自托管模块订阅 / 注入脚本 / 图标: /modules/*, /dist/*, /wloc.jpg
+// 内容在构建时由 scripts/build-assets.mjs 嵌入，运行时不依赖 GitHub。
+for (const [route, asset] of Object.entries(ASSETS)) {
+  app.get(route, (c) => {
+    c.header("Content-Type", asset.type);
+    c.header("Cache-Control", "public, max-age=300");
+    c.header("Access-Control-Allow-Origin", "*");
+    if (!asset.binary) return c.body(asset.body);
+    const bin = Uint8Array.from(atob(asset.body), (ch) => ch.charCodeAt(0));
+    return c.body(bin);
+  });
+}
 
 // 地图链接解析: 供快捷指令调用。
 // GET /api/parse?u=<链接>&format=json&cs=<gcj|none>
